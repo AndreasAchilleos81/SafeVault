@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SafeVault.Database;
-using SafeVault.Helpers;
 using SafeVault.Models;
 using static SafeVault.Helpers.PasswordHelper;
 
@@ -28,7 +26,7 @@ namespace SafeVault.Controllers
 		{
 			var user = _userService.ValidateUser(request.Email, request.Password);
 
-			if (user == null || !VerifyPassword(request.Password, user.Password))
+			if (user == null || !VerifyPassword(request.Password, user.PasswordHash))
 			{
 				return Unauthorized();
 			}
@@ -38,18 +36,21 @@ namespace SafeVault.Controllers
 		}
 
 		[HttpPost("register")]
-		public IActionResult Register([FromBody] LoginRequest request)
+		public IActionResult Register([FromBody] User user)
 		{
-			if (_safeVaultDbContext.Users.Any(u => u.Email == request.Email))
-				return BadRequest("Username already exists.");
+			if (_safeVaultDbContext.Users.Any(u => u.Email == user.Email))
+				return BadRequest("Email already exists.");
 
-			var user = new User
+			var newUser = new User
 			{
-				Email = request.Email,
-				PasswordHash = ConvertToHash(request.Password)
+				Email = user.Email,
+				Password = user.Password,
+				Role = user.Role,
+				Username = user.Username,
+				PasswordHash = ConvertToHash(user.Password)
 			};
 
-			_safeVaultDbContext.Users.Add(user);
+			_safeVaultDbContext.Users.Add(newUser);
 			_safeVaultDbContext.SaveChanges();
 
 			return Ok("User registered successfully.");

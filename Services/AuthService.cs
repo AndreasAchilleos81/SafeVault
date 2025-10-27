@@ -4,7 +4,7 @@ using SafeVault.Models;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
+using System.Security.Claims;
 namespace SafeVault.Services
 {
 	public class AuthService
@@ -25,9 +25,10 @@ namespace SafeVault.Services
 		{
 			var claims = new []
 			{
-				new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, user.Username),
-				new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email, user.Email),
-				new System.Security.Claims.Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+				new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+				new Claim(JwtRegisteredClaimNames.Email, user.Email),
+				new Claim("role", user.Role),
+				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
 			};
 
 			var jwtSection = _configuration.GetSection("Jwt");	

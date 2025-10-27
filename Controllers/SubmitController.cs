@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SafeVault.Database;
-using SafeVault.Models;
 
 namespace SafeVault.Controllers
 {
