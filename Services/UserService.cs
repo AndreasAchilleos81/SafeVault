@@ -12,7 +12,7 @@ namespace SafeVault.Services
 			_safeVaultDbContext = safeVaultDbContext;
 		}
 
-		public User? ValidateCredential(string email, string password)
+		public User? ValidateUser(string email, string password)
 		{
 			return _safeVaultDbContext.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
 		}
