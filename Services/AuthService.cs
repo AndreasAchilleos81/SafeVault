@@ -14,7 +14,7 @@ namespace SafeVault.Services
 		public AuthService(IConfiguration configuration)
 		{
 			_configuration = configuration;
-			_connectionString = "Data Source=" + Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, _configuration["SafeValueDatabase"]!)); ;
+			_connectionString = $"Data Source={Path.Combine(AppContext.BaseDirectory, configuration["SafeValueDatabase"]!)}";
 		}
 		internal AuthService(string connectionString)
 		{

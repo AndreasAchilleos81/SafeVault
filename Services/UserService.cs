@@ -1,4 +1,5 @@
-﻿using SafeVault.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using SafeVault.Database;
 using SafeVault.Models;
 
 namespace SafeVault.Services
@@ -14,7 +15,10 @@ namespace SafeVault.Services
 
 		public User? ValidateUser(string email, string password)
 		{
-			return _safeVaultDbContext.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+			return _safeVaultDbContext.
+								Users.
+								FromSqlInterpolated($"Select * FROM Users WHERE Email = {email} AND Password = {password} LIMIT 1").
+								FirstOrDefault();
 		}
 	}
 }

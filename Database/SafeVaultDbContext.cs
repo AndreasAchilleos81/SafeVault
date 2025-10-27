@@ -10,7 +10,7 @@ namespace SafeVault.Database
 		public DbSet<User> Users { get; set; }
 		public SafeVaultDbContext(IConfiguration configuration)
 		{
-			_connectionString = "Data Source=" + Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, configuration["SafeValueDatabase"]!));
+			_connectionString = $"Data Source={Path.Combine(AppContext.BaseDirectory, configuration["SafeValueDatabase"]!)}";
 			Batteries.Init();
 		}
 

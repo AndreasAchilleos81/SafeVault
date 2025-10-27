@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using SafeVault.Database;
+using SafeVault.Helpers;
 using SafeVault.Models;
 using static SafeVault.Helpers.PasswordHelper;
+using static SafeVault.Helpers.ValidationHelpers;
 
 namespace SafeVault.Controllers
 {
@@ -24,9 +26,18 @@ namespace SafeVault.Controllers
 		[HttpPost("login")]
 		public IActionResult Login([FromBody] LoginRequest request)
 		{
-			var user = _userService.ValidateUser(request.Email, request.Password);
+			string allowedSpecialCharactersForPassword = "!@#$%^&*";
+			string email = SanitizeInput(request.Email);
+			string pass = SanitizeInput(request.Password, allowedSpecialCharactersForPassword);
+			
+			if (!IsValidInput(email) && !IsValidInput(pass))
+			{
+				return BadRequest("Invalid input.");
+			}
 
-			if (user == null || !VerifyPassword(request.Password, user.PasswordHash))
+			var user = _userService.ValidateUser(email, pass);
+
+			if (user == null || !VerifyPassword(pass, user.PasswordHash))
 			{
 				return Unauthorized();
 			}
@@ -38,6 +49,12 @@ namespace SafeVault.Controllers
 		[HttpPost("register")]
 		public IActionResult Register([FromBody] User user)
 		{
+			string allowedSpecialCharactersForPassword = "!@#$%^&*";
+			if (!IsValidInput(user.Email) && !IsValidInput(user.Password, allowedSpecialCharactersForPassword))
+			{
+				return BadRequest("Invalid input.");
+			}
+
 			if (_safeVaultDbContext.Users.Any(u => u.Email == user.Email))
 				return BadRequest("Email already exists.");
 
