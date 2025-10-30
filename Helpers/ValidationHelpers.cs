@@ -39,7 +39,7 @@ namespace SafeVault.Helpers
 
 			// Remove all characters not alphanumeric or in allowed set
 			var validCharacters = new HashSet<char>(allowedSpecialCharacters);
-			sanitized = new string(sanitized.Where(c => char.IsLetterOrDigit(c) || validCharacters.Contains(c)).ToArray());
+			sanitized = new string(sanitized.Where(c => validCharacters.Contains(c) || char.IsLetterOrDigit(c)).ToArray());
 
 			return sanitized;
 		}

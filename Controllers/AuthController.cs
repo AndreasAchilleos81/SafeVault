@@ -27,7 +27,8 @@ namespace SafeVault.Controllers
 		public IActionResult Login([FromBody] LoginRequest request)
 		{
 			string allowedSpecialCharactersForPassword = "!@#$%^&*";
-			string email = SanitizeInput(request.Email);
+			string emailAllowedChars = "@._-";
+			string email = SanitizeInput(request.Email, emailAllowedChars);
 			string pass = SanitizeInput(request.Password, allowedSpecialCharactersForPassword);
 			
 			if (!IsValidInput(email) && !IsValidInput(pass))
